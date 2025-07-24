@@ -23,8 +23,8 @@ D_s  = cosmo.angular_diameter_distance(z_source)
 D_ds = cosmo.angular_diameter_distance_z1z2(z_lens, z_source)
 
 # --- PixelGrid ---
-deltaPix = 0.05
-ra_at_xy_0, dec_at_xy_0 = -2.5, -2.5
+deltaPix = 0.02
+ra_at_xy_0, dec_at_xy_0 = -1.0, -1.0
 transform_pix2angle = np.eye(2) * deltaPix
 kwargs_pixel = {
     'nx': 100, 'ny': 100,
@@ -64,7 +64,7 @@ def simulate_forward(mass_subhalo, position_subhalo, lens_light=False):
     # --- Modelos de luz ---
     lightModel_source = LightModel(light_model_list=['SERSIC'])
     kwargs_light_source = [{
-        'amp': 100.0,
+        'amp': 100,
         'R_sersic': 0.15,
         'n_sersic': 1.0,
         'center_x': 0.0,
@@ -138,7 +138,7 @@ def simulate_forward(mass_subhalo, position_subhalo, lens_light=False):
     kwargs_ps = [{
         'ra_source': 0.0,       # Posición en RA (arcsec)
         'dec_source': 0.0,      # Posición en Dec (arcsec)
-        'source_amp': 100.0      # Amplitud de la fuente puntual
+        'source_amp': 0.0      # Amplitud de la fuente puntual
     }]
 
     # Instancia del modelo de fuente puntual para el caso SIN subhalo
@@ -177,8 +177,8 @@ def simulate_forward(mass_subhalo, position_subhalo, lens_light=False):
     )
 
     # --- Simulación de imágenes ---
-    exp_time = 100  # Tiempo de exposición en segundos
-    background_rms = 0.1  # RMS del fondo en unidades de cuenta
+    exp_time = 300  # Tiempo de exposición en segundos
+    background_rms = 0.01  # RMS del fondo en unidades de cuenta
 
     # a) Imagen CON subhalo y CON ruido
     image_sub = imageModel.image(
@@ -223,22 +223,22 @@ def simulate_forward(mass_subhalo, position_subhalo, lens_light=False):
 ###############################################################################################
 # --- Generación del dataset de imágenes simuladas ---
 # Number of samples to generate
-N = 300
+N = 1000
 
 # Ranges for subhalo mass and position
 mass_min, mass_max = 1e7, 1e9       # [M_sun]
-pos_min, pos_max   = -2.5, 2.5      # [arcsec]
+pos_min, pos_max   = -0.6, 0.6      # [arcsec]
 
 # Pre–compute one example to grab array shape
 _example_img, _example_smooth, _example_delta = simulate_forward(
     mass_subhalo=1e8,
-    position_subhalo=(0.0, 0.0),
+    position_subhalo=(0.0, 0.5),
     lens_light=True
 )
 ny, nx = _example_img.shape
 
 # Create HDF5 file and datasets
-with h5py.File('lens_dataset.h5', 'w') as f:
+with h5py.File('lens_1000_no_sc.h5', 'w') as f:
     dset_input       = f.create_dataset('images_noisy',    (N, ny, nx), dtype='f4')
     dset_smooth      = f.create_dataset('images_smooth',   (N, ny, nx), dtype='f4')
     dset_delta_psi   = f.create_dataset('delta_psi_maps',  (N, ny, nx), dtype='f4')
