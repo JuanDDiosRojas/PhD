@@ -137,7 +137,7 @@ def simulate_pair_and_delta(mass_subhalo, position_subhalo):
 
 #----------Loop to generate dataset-------------------
 # --- Configuración ---
-N = 5  # Número de muestras
+N = 500  # Número de muestras
 mass_min, mass_max = 1e7, 1e9  # Masa del subhalo [M_sun]
 pos_min, pos_max   = -1.6, 1.6  # Rango de posiciones (x,y) en arcsec
 
